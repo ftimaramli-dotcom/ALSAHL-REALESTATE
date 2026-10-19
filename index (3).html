@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نظام إدارة المبيعات</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F6F8;--sf:#fff;--ink:#1F2A3C;--mut:#7A8699;--ln:#E7EBF0;--pri:#3E8E8A;--pri2:#E3F2F1;--lav:#EDEBFB}
+*{box-sizing:border-box}
+body{margin:0;font-family:"IBM Plex Sans Arabic",system-ui,Tahoma,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+button,input,select,textarea{font:inherit;color:inherit}
+.shell{display:flex;min-height:100vh}
+.side{width:240px;background:var(--sf);border-inline-end:1px solid var(--ln);padding:22px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;padding:0 8px 18px}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#6CC3BC,#8E8FE6);display:grid;place-items:center;color:#fff}
+.nav{display:flex;align-items:center;gap:11px;padding:11px 12px;border:0;background:none;border-radius:11px;cursor:pointer;color:var(--mut);font-weight:500;text-align:start;width:100%}
+.nav:hover{background:var(--bg)}.nav.on{background:var(--pri2);color:var(--pri);font-weight:600}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sp{flex:1}
+.me{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:12px;font-size:13px}
+.me b{display:block;font-size:14px}.me small{color:var(--mut)}
+.row2{display:flex;gap:8px;margin-top:8px}
+.ghost{flex:1;border:1px solid var(--ln);background:var(--sf);border-radius:10px;padding:8px;cursor:pointer;font-size:13px}
+.ghost:hover{background:var(--bg)}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:13px;flex:none}
+.main{flex:1;padding:28px 32px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+h1{margin:0;font-size:24px;font-weight:700}.sub{color:var(--mut);margin-top:4px;font-size:14px}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:11px;padding:11px 20px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.07)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.st{background:var(--sf);border-radius:16px;padding:16px 18px;border:1px solid var(--ln)}
+.st span{color:var(--mut);font-size:13px;display:flex;align-items:center;gap:7px}
+.st b{display:block;font-size:26px;margin-top:6px}.dot{width:9px;height:9px;border-radius:50%}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:18px}
+.bar{display:flex;margin-bottom:14px}
+.bar input{max-width:320px}
+input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--ln);border-radius:11px;background:#FBFCFD;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri2)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th{color:var(--mut);font-weight:500;font-size:13px;text-align:start;padding:10px 12px;border-bottom:1px solid var(--ln);white-space:nowrap}
+td{padding:13px 12px;border-bottom:1px solid #F0F2F5;white-space:nowrap;text-align:start}
+tr:last-child td{border-bottom:0}
+.nm{display:flex;align-items:center;gap:10px;font-weight:500}
+.chip{padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600}
+.del{background:none;border:0;color:#C2506B;cursor:pointer;font-size:13px}
+.empty{text-align:center;color:var(--mut);padding:40px 0}
+dialog{border:0;border-radius:20px;padding:24px;width:min(520px,94vw);box-shadow:0 20px 60px #1f2a3c33}
+dialog::backdrop{background:#1f2a3c55}
+dialog h3{margin:0 0 16px}
+.fg{display:grid;gap:12px}.fg label{font-size:13px;color:var(--mut);display:grid;gap:6px}
+.acts{display:flex;gap:10px;margin-top:18px}.acts .btn,.acts .ghost{flex:1;padding:11px}
+.lg{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#E3F2F1,#EDEBFB 60%,#FCE9E1);padding:20px}
+.lc{background:var(--sf);border-radius:24px;padding:36px;width:min(400px,100%);box-shadow:0 20px 60px #3e8e8a22}
+.lc h2{margin:14px 0 4px}.lc form{display:grid;gap:12px;margin-top:20px}.err{color:#C2506B;font-size:13px;min-height:18px}
+.tl{position:fixed;top:16px;inset-inline-start:16px}.tl .ghost{padding:8px 16px}
+@media(max-width:820px){.shell{flex-direction:column}.side{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px}.brand{padding:0 8px 0 0}.nav{width:auto;padding:9px 12px}.me{display:none}.main{padding:18px 14px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ===== غيّري القيمتين من Supabase > Project Settings > API =====
+const SUPABASE_URL="https://roglntubflsygftmcmxi.supabase.co";
+const SUPABASE_KEY="sb_publishable_HiXoJUNoHXLyBvXH6a9aXA_OMeMjavq";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const L={ar:{app:"نظام إدارة المبيعات",login:"تسجيل الدخول",welcome:"مرحباً بعودتك",welcome2:"أدخل بياناتك للمتابعة",email:"البريد الإلكتروني",pass:"كلمة المرور",bad:"البريد الإلكتروني أو كلمة المرور غير صحيحة",
+clients:"العملاء",deals:"الصفقات",owners:"الملاك",team:"الفريق",admin:"مدير",sales:"مندوب مبيعات",out:"تسجيل الخروج",lang:"English",
+add_clients:"إضافة عميل",add_deals:"إضافة صفقة",add_owners:"إضافة مالك",sub_clients:"سجل العملاء المحتملين ومصادر وصولهم",sub_deals:"تابع حالة كل صفقة وأولويتها",sub_owners:"بيانات ملاك العقارات وتفاصيل عقاراتهم",sub_team:"إدارة المستخدمين وصلاحياتهم",
+f_name:"الاسم",f_location:"المكان / الموقع",f_need:"الحاجة",f_cdate:"تاريخ التواصل",need_buy:"شراء",need_rent:"إيجار",f_phone:"رقم الهاتف",f_source:"مصدر العميل",f_interest:"مجال الاهتمام",f_budget:"الميزانية (درهم)",f_notes:"ملاحظات",f_client:"العميل",f_status:"الحالة",f_oname:"اسم المالك",f_prop:"العقار",f_area:"المساحة",f_price:"السعر (درهم)",f_details:"التفاصيل",f_staff:"المسؤول",f_date:"التاريخ",
+st_interested:"مهتم",st_urgent:"مستعجل",st_convince:"يحتاج إلى إقناع",
+src_facebook:"فيسبوك",src_tiktok:"تيك توك",src_property_finder:"بروبرتي فايندر",src_bayut:"بيوت",src_instagram:"إنستغرام",src_search:"بحث عادي",src_other:"أخرى",
+choose:"اختر...",save:"حفظ",cancel:"إلغاء",del:"حذف",sure:"هل تريد الحذف نهائياً؟",search:"بحث...",empty:"لا توجد سجلات بعد. ابدأ بإضافة أول سجل.",
+units:"العقارات المتاحة",add_units:"إضافة وحدة",sub_units:"قائمة الوحدات المتاحة للبيع أو الإيجار",f_no:"رقم العقار",f_utype:"نوع الوحدة",f_ltype:"الغرض",f_map:"رابط الموقع على الخريطة",f_stype:"مصدر الوحدة",f_added:"تاريخ الإضافة",lt_sale:"للبيع",lt_rent:"للإيجار",ut_apartment:"شقة",ut_villa:"فيلا",ut_land:"أرض",ut_building:"مبنى",ut_shop:"محل تجاري",ut_office:"مكتب",ut_other:"أخرى",sr_direct:"مباشرة من المالك",sr_third:"عن طريق طرف",map_open:"عرض على الخريطة",map_ph:"الصقي رابط خرائط جوجل هنا",s_total:"الإجمالي",s_budget:"مجموع الميزانيات",s_value:"إجمالي قيمة العقارات",t_name:"الاسم",t_email:"البريد الإلكتروني",t_role:"الصلاحية",
+t_help:"لإضافة موظف جديد: من لوحة Supabase اختر Authentication ثم Add user. سيظهر هنا بعد إضافته ويمكنك تحديد صلاحيته."},
+en:{app:"Sales Management",login:"Sign in",welcome:"Welcome back",welcome2:"Enter your details to continue",email:"Email",pass:"Password",bad:"Incorrect email or password",
+clients:"Clients",deals:"Deals",owners:"Owners",team:"Team",admin:"Admin",sales:"Sales agent",out:"Sign out",lang:"العربية",
+add_clients:"Add client",add_deals:"Add deal",add_owners:"Add owner",sub_clients:"Track leads and where they came from",sub_deals:"Follow each deal and its priority",sub_owners:"Property owners and their listings",sub_team:"Manage users and permissions",
+f_name:"Name",f_location:"Location",f_need:"Needs to",f_cdate:"Contact date",need_buy:"Buy",need_rent:"Rent",f_phone:"Phone",f_source:"Lead source",f_interest:"Interested in",f_budget:"Budget (AED)",f_notes:"Notes",f_client:"Client",f_status:"Status",f_oname:"Owner name",f_prop:"Property",f_area:"Area",f_price:"Price (AED)",f_details:"Details",f_staff:"Agent",f_date:"Date",
+st_interested:"Interested",st_urgent:"Urgent",st_convince:"Needs convincing",
+src_facebook:"Facebook",src_tiktok:"TikTok",src_property_finder:"Property Finder",src_bayut:"Bayut",src_instagram:"Instagram",src_search:"Organic search",src_other:"Other",
+choose:"Select...",save:"Save",cancel:"Cancel",del:"Delete",sure:"Delete this record permanently?",search:"Search...",empty:"Nothing here yet. Add your first record.",
+units:"Available units",add_units:"Add unit",sub_units:"Units available for sale or rent",f_no:"No.",f_utype:"Unit type",f_ltype:"Purpose",f_map:"Map location link",f_stype:"Source",f_added:"Date added",lt_sale:"For sale",lt_rent:"For rent",ut_apartment:"Apartment",ut_villa:"Villa",ut_land:"Land",ut_building:"Building",ut_shop:"Shop",ut_office:"Office",ut_other:"Other",sr_direct:"Direct from owner",sr_third:"Through a third party",map_open:"View on map",map_ph:"Paste the Google Maps link here",s_total:"Total",s_budget:"Total budgets",s_value:"Total property value",t_name:"Name",t_email:"Email",t_role:"Role",
+t_help:"To add a new user: open Supabase, go to Authentication, then Add user. They appear here and you can set their role."}};
+let lang="ar";try{lang=localStorage.getItem("lang")||"ar"}catch(e){}
+const t=k=>L[lang][k]||k;
+const SRC=["facebook","tiktok","property_finder","bayut","instagram","search","other"];
+const ST={interested:["#DDF3E8","#1F7A4D"],urgent:["#FDE2E2","#B42318"],convince:["#FFF1D6","#9A6A00"]};
+const T={
+ clients:{f:[["name","f_name"],["phone","f_phone","tel"],["location","f_location"],["need","f_need","need"],["source","f_source","src"],["interest","f_interest"],["budget","f_budget","num"],["contact_date","f_cdate","date"],["notes","f_notes"]]},
+ deals:{f:[["client_id","f_client","client"],["status","f_status","status"],["notes","f_notes"]]},
+ owners:{f:[["owner_name","f_oname"],["phone","f_phone","tel"],["property","f_prop"],["location","f_location"],["area","f_area"],["price","f_price","num"],["details","f_details"]]},
+ units:{f:[["unit_no","f_no","no"],["location","f_location"],["unit_type","f_utype","utype"],["listing_type","f_ltype","ltype"],["price","f_price","num"],["map_url","f_map","map"],["source_type","f_stype","stype"],["notes","f_notes"]]}};
+const IC={clients:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+ deals:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+ owners:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+ units:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/>',
+ team:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'};
+const svg=k=>`<svg viewBox="0 0 24 24">${IC[k]}</svg>`;
+let me,tab="clients";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num=n=>n==null?"":Number(n).toLocaleString(lang==="ar"?"ar-AE-u-nu-latn":"en-US");
+const dt=d=>new Date(d).toLocaleDateString(lang==="ar"?"ar-AE-u-nu-latn":"en-GB");
+const PAL=[["#E3F2F1","#2C6E6A"],["#EDEBFB","#5B5BB5"],["#FCE9E1","#B5593A"],["#E8F1FB","#3A6EA5"],["#FFF1D6","#9A6A00"]];
+const avatar=n=>{const p=PAL[[...String(n||"?")].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL.length];return `<span class="av" style="background:${p[0]};color:${p[1]}">${esc(String(n||"?").trim().charAt(0))}</span>`};
+function setLang(l){lang=l;try{localStorage.setItem("lang",l)}catch(e){}document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr";document.title=t("app")}
+setLang(lang);
+
+async function init(){
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session)return showLogin();
+ const {data}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
+ me=data;show();
+}
+function showLogin(){
+ $("#app").innerHTML=`<div class="lg"><div class="tl"><button class="ghost" id="lt">${t("lang")}</button></div><div class="lc">
+ <div class="logo" style="width:48px;height:48px;border-radius:15px"><svg viewBox="0 0 24 24" style="width:26px;height:26px">${IC.owners}</svg></div>
+ <h2>${t("welcome")}</h2><div class="sub">${t("welcome2")}</div>
+ <form id="lf"><input name="e" type="email" placeholder="${t("email")}" required><input name="p" type="password" placeholder="${t("pass")}" required>
+ <div class="err" id="err"></div><button class="btn">${t("login")}</button></form></div></div>`;
+ $("#lt").onclick=()=>{setLang(lang==="ar"?"en":"ar");showLogin()};
+ $("#lf").onsubmit=async e=>{e.preventDefault();const f=e.target;
+  const {error}=await sb.auth.signInWithPassword({email:f.e.value,password:f.p.value});
+  error?$("#err").textContent=t("bad"):init()};
+}
+function show(){
+ const keys=[...Object.keys(T),...(me.role==="admin"?["team"]:[])];
+ $("#app").innerHTML=`<div class="shell"><aside class="side">
+ <div class="brand"><span class="logo"><svg viewBox="0 0 24 24">${IC.owners}</svg></span>${t("app")}</div>
+ ${keys.map(k=>`<button class="nav ${tab===k?"on":""}" data-t="${k}">${svg(k)}${t(k)}</button>`).join("")}
+ <div class="sp"></div>
+ <div class="me">${avatar(me.full_name)}<div><b>${esc(me.full_name)}</b><small>${t(me.role)}</small></div></div>
+ <div class="row2"><button class="ghost" id="lt">${t("lang")}</button><button class="ghost" id="out">${t("out")}</button></div>
+ </aside><main class="main" id="main"></main></div><dialog id="dlg"></dialog>`;
+ document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{tab=b.dataset.t;show()});
+ $("#lt").onclick=()=>{setLang(lang==="ar"?"en":"ar");show()};
+ $("#out").onclick=async()=>{await sb.auth.signOut();showLogin()};
+ tab==="team"?renderTeam():renderTab();
+}
+const head=(add)=>`<div class="top"><div><h1>${t(tab)}</h1><div class="sub">${t("sub_"+tab)}</div></div>${add?`<button class="btn" id="addb">+ ${t("add_"+tab)}</button>`:""}</div>`;
+function stats(rows){
+ const c=(l,v,col)=>`<div class="st"><span>${col?`<i class="dot" style="background:${col}"></i>`:""}${l}</span><b>${v}</b></div>`;
+ if(tab==="deals")return c(t("s_total"),rows.length)+Object.keys(ST).map(k=>c(t("st_"+k),rows.filter(r=>r.status===k).length,ST[k][1])).join("");
+ if(tab==="units")return c(t("s_total"),rows.length)+c(t("lt_sale"),rows.filter(r=>r.listing_type==="sale").length,"#3E8E8A")+c(t("lt_rent"),rows.filter(r=>r.listing_type==="rent").length,"#8E8FE6");
+ const k=tab==="clients"?"budget":"price";
+ return c(t("s_total"),rows.length)+c(t(tab==="clients"?"s_budget":"s_value"),num(rows.reduce((a,r)=>a+(+r[k]||0),0)));
+}
+async function renderTab(){
+ const cfg=T[tab],adm=me.role==="admin";
+ const {data:cl}=await sb.from("clients").select("id,name,phone");
+ const sel=tab==="deals"?"*, clients(name,phone), profiles(full_name)":"*, profiles(full_name)";
+ const {data}=await sb.from(tab).select(sel).order("created_at",{ascending:false});const rows=data||[];
+ const cell=(r,[k,,o])=>{
+  if(o==="client")return `<div class="nm">${avatar(r.clients?.name)}<div>${esc(r.clients?.name)}<br><small style="color:var(--mut)">${esc(r.clients?.phone)}</small></div></div>`;
+  if(o==="status")return `<span class="chip" style="background:${ST[r[k]][0]};color:${ST[r[k]][1]}">${t("st_"+r[k])}</span>`;
+  if(o==="src")return r[k]?`<span class="chip" style="background:var(--lav);color:#5B5BB5">${t("src_"+r[k])}</span>`:"";
+  if(o==="need")return r[k]?`<span class="chip" style="background:#FCE9E1;color:#B5593A">${t("need_"+r[k])}</span>`:"";
+  if(o==="date")return r[k]?dt(r[k]):"";
+  if(o==="no")return `<b style="color:var(--pri)">${esc(r[k])}</b>`;
+  if(o==="utype")return r[k]?t("ut_"+r[k]):"";
+  if(o==="ltype")return r[k]?`<span class="chip" style="background:${r[k]==="sale"?"#E3F2F1":"#EDEBFB"};color:${r[k]==="sale"?"#2C6E6A":"#5B5BB5"}">${t("lt_"+r[k])}</span>`:"";
+  if(o==="stype")return r[k]?`<span class="chip" style="background:#FFF1D6;color:#9A6A00">${t(r[k]==="direct"?"sr_direct":"sr_third")}</span>`:"";
+  if(o==="map")return /^https?:\/\//.test(r[k]||"")?`<a href="${esc(r[k])}" target="_blank" rel="noopener" style="color:var(--pri);font-weight:600;text-decoration:none">${t("map_open")} &#8599;</a>`:"";
+  if(o==="num")return num(r[k]);
+  if(k==="name"||k==="owner_name")return `<div class="nm">${avatar(r[k])}${esc(r[k])}</div>`;
+  return esc(r[k]);};
+ $("#main").innerHTML=head(true)+`<div class="stats">${stats(rows)}</div><div class="card"><div class="bar"><input id="q" placeholder="${t("search")}"></div>
+ <div class="tw"><table><thead><tr>${cfg.f.map(x=>`<th>${t(x[1])}</th>`).join("")}${tab==="clients"?"":`<th>${t(tab==="units"?"f_added":"f_date")}</th>`}${adm?`<th>${t("f_staff")}</th>`:""}<th></th></tr></thead>
+ <tbody id="tb">${rows.map(r=>`<tr>${cfg.f.map(x=>`<td>${cell(r,x)}</td>`).join("")}${tab==="clients"?"":`<td>${dt(r.created_at)}</td>`}${adm?`<td>${esc(r.profiles?.full_name)}</td>`:""}<td><button class="del" data-id="${r.id}">${t("del")}</button></td></tr>`).join("")}</tbody></table>
+ ${rows.length?"":`<div class="empty">${t("empty")}</div>`}</div></div>`;
+ $("#q").oninput=e=>document.querySelectorAll("#tb tr").forEach(tr=>tr.style.display=tr.textContent.includes(e.target.value)?"":"none");
+ document.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(confirm(t("sure"))){await sb.from(tab).delete().eq("id",b.dataset.id);renderTab()}});
+ $("#addb").onclick=()=>openForm(cfg,cl||[]);
+}
+function openForm(cfg,cl){
+ const inp=([k,l,o])=>{const lb=t(l);let h;
+  if(o==="client")h=`<select name="${k}" required><option value="">${t("choose")}</option>${cl.map(c=>`<option value="${c.id}">${esc(c.name)} - ${esc(c.phone)}</option>`).join("")}</select>`;
+  else if(o==="status")h=`<select name="${k}">${Object.keys(ST).map(v=>`<option value="${v}">${t("st_"+v)}</option>`).join("")}</select>`;
+  else if(o==="src")h=`<select name="${k}"><option value="">${t("choose")}</option>${SRC.map(v=>`<option value="${v}">${t("src_"+v)}</option>`).join("")}</select>`;
+  else if(o==="utype")h=`<select name="${k}"><option value="">${t("choose")}</option>${["apartment","villa","land","building","shop","office","other"].map(v=>`<option value="${v}">${t("ut_"+v)}</option>`).join("")}</select>`;
+  else if(o==="ltype")h=`<select name="${k}"><option value="sale">${t("lt_sale")}</option><option value="rent">${t("lt_rent")}</option></select>`;
+  else if(o==="stype")h=`<select name="${k}"><option value="direct">${t("sr_direct")}</option><option value="third_party">${t("sr_third")}</option></select>`;
+  else if(o==="need")h=`<select name="${k}"><option value="">${t("choose")}</option><option value="buy">${t("need_buy")}</option><option value="rent">${t("need_rent")}</option></select>`;
+  else h=`<input name="${k}" type="${o==="num"?"number":o==="tel"?"tel":o==="date"?"date":o==="map"?"url":"text"}" ${o==="map"?`placeholder="${t("map_ph")}"`:""} ${["name","owner_name"].includes(k)?"required":""}>`;
+  return `<label>${lb}${h}</label>`};
+ $("#dlg").innerHTML=`<h3>${t("add_"+tab)}</h3><form id="af" class="fg">${cfg.f.filter(x=>x[2]!=="no").map(inp).join("")}<div class="acts"><button type="button" class="ghost" id="cx">${t("cancel")}</button><button class="btn">${t("save")}</button></div></form>`;
+ $("#dlg").showModal();$("#cx").onclick=()=>$("#dlg").close();
+ $("#af").onsubmit=async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.target));for(const k in v)if(v[k]==="")v[k]=null;
+  const {error}=await sb.from(tab).insert(v);if(error)return alert(error.message);$("#dlg").close();renderTab()};
+}
+async function renderTeam(){
+ const {data}=await sb.from("profiles").select("*").order("email");
+ $("#main").innerHTML=head(false)+`<div class="card"><p class="sub" style="margin-top:0">${t("t_help")}</p><div class="tw"><table><thead><tr><th>${t("t_name")}</th><th>${t("t_email")}</th><th>${t("t_role")}</th></tr></thead>
+ <tbody>${data.map(p=>`<tr><td><div class="nm">${avatar(p.full_name)}${esc(p.full_name)}</div></td><td>${esc(p.email)}</td><td><select data-id="${p.id}" style="width:auto"><option value="sales" ${p.role==="sales"?"selected":""}>${t("sales")}</option><option value="admin" ${p.role==="admin"?"selected":""}>${t("admin")}</option></select></td></tr>`).join("")}</tbody></table></div></div>`;
+ document.querySelectorAll("select[data-id]").forEach(s=>s.onchange=async()=>{const {error}=await sb.from("profiles").update({role:s.value}).eq("id",s.dataset.id);if(error)alert(error.message)});
+}
+init();
+</script>
+</body>
+</html>
